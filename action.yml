@@ -9,6 +9,9 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Checkout PR repo
+      uses: actions/checkout@v4
+
     - name: Checkout RAMA source
       uses: actions/checkout@v4
       with:
