@@ -9,22 +9,11 @@ inputs:
 runs:
   using: composite
   steps:
-
-    - name: Clone RAMA
-      shell: bash
-      run: git clone https://github.com/munidiff/rama.git
-
-    - name: Debug action path
-      shell: bash
-      run: |
-        echo "github.action_path = ${{ github.action_path }}"
-        echo "pom path          = ${{ github.action_path }}/pom.xml"
-        if [[ -f "${{ github.action_path }}/pom.xml" ]]; then
-          echo "pom.xml exists"
-        else
-          echo "pom.xml NOT found"
-        fi
-        ls -la "${{ github.action_path }}"
+    - name: Checkout RAMA source
+      uses: actions/checkout@v4
+      with:
+        repository: munidiff/rama
+        path: rama
 
     - name: Setup Java
       uses: actions/setup-java@v5
@@ -32,11 +21,11 @@ runs:
         distribution: temurin
         java-version: 21
         cache: maven
-        cache-dependency-path: ${{ github.action_path }}/pom.xml
+        cache-dependency-path: rama/pom.xml
 
     - name: Install EMF Compare locally
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: rama
       run: |
         mvn install:install-file \
           -Dfile=libs/org.eclipse.emf.compare_3.5.3.202406060900.jar \
@@ -47,7 +36,7 @@ runs:
 
     - name: Install Modiff libs locally
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: rama
       run: |
         mvn install:install-file \
           -Dfile=libs/org.eclipse.epsilon.modiff-0.0.1-SNAPSHOT.jar \
@@ -59,12 +48,12 @@ runs:
 
     - name: Build RAMA
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: rama
       run: mvn clean package
 
     - name: Run RAMA
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: rama
       run: java -jar target/RAMA.jar "${{ inputs.pull-request-number }}"
       env:
         GITHUB_TOKEN: ${{ github.token }}
