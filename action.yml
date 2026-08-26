@@ -9,12 +9,22 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout PR repo
-      uses: actions/checkout@v4
 
     - name: Clone RAMA
       shell: bash
       run: git clone https://github.com/munidiff/rama.git
+
+    - name: Debug action path
+      shell: bash
+      run: |
+        echo "github.action_path = ${{ github.action_path }}"
+        echo "pom path          = ${{ github.action_path }}/pom.xml"
+        if [[ -f "${{ github.action_path }}/pom.xml" ]]; then
+          echo "pom.xml exists"
+        else
+          echo "pom.xml NOT found"
+        fi
+        ls -la "${{ github.action_path }}"
 
     - name: Setup Java
       uses: actions/setup-java@v5
