@@ -3,3 +3,8 @@ target/**
 
 # IDE files
 .vscode/**
+/target/
+
+# OS generated files
+.DS_Store
+.directory
