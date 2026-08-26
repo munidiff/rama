@@ -13,6 +13,7 @@ runs:
       uses: actions/checkout@v4
 
     - name: Clone RAMA
+      shell: bash
       run: git clone https://github.com/munidiff/rama.git
 
     - name: Setup Java
