@@ -91,24 +91,21 @@ public class ReportCommentRenderer {
     private void appendConflictReport(StringBuilder body, FileReport report) {
         ConflictReport conflictReport = report.conflictReport();
 
-        body.append("RAMA detected ");
+        body.append("Detected ");
         body.append(conflictReport.conflictCount());
-        body.append(" EMF Compare conflict group");
+        body.append(" group");
         if (conflictReport.conflictCount() != 1) {
             body.append("s");
         }
-        body.append(" (");
-        body.append(conflictReport.realConflictCount()).append(" real, ");
-        body.append(conflictReport.pseudoConflictCount()).append(" pseudo");
-        body.append(").\n\n");
+        body.append(" of differences with conflicts\n\n");
 
         body.append("<details open>\n");
-        body.append("<summary>Branch changes against merge-base</summary>\n\n");
+        body.append("<summary>Incompatible changes against merge-base</summary>\n\n");
         body.append("<table>\n");
         body.append("<thead>\n");
         body.append("<tr>");
-        body.append("<th>Left/source changes vs merge-base</th>");
-        body.append("<th>Right/target changes vs merge-base</th>");
+        body.append("<th>Source changes vs merge-base</th>");
+        body.append("<th>Target changes vs merge-base</th>");
         body.append("</tr>\n");
         body.append("</thead>\n");
         body.append("<tbody>\n");
