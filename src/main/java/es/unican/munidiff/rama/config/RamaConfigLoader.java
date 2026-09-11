@@ -35,34 +35,29 @@ public class RamaConfigLoader {
      * @throws IOException if the packaged default configuration cannot be read
      */
     public RamaConfigLoadResult loadConfig() throws IOException {
-        Path workspace = configurationWorkspacePath();
+        Path workspace = getWorkspacePath();
 
-        if (workspace != null) {
-            // Prefer the target repository config checked out by actions/checkout.
-            Path targetRepositoryConfig = workspace.resolve(CONFIG_FILENAME);
+        // Prefer the target repository config checked out by actions/checkout.
+        Path targetRepositoryConfig = workspace.resolve(CONFIG_FILENAME);
 
-            if (Files.exists(targetRepositoryConfig)) {
-                try {
-                    String content = Files.readString(targetRepositoryConfig);
+        if (Files.exists(targetRepositoryConfig)) {
+            try {
+                String content = Files.readString(targetRepositoryConfig);
 
-                    if (content.isBlank()) {
-                        return useDefaultConfiguration(
-                                "`rama.json` is empty. RAMA is using the packaged default configuration."
-                        );
-                    }
-
-                    System.out.println("Using RAMA config from target repository.");
-                    return new RamaConfigLoadResult(
-                            OBJECT_MAPPER.readValue(content, RamaConfig.class),
-                            null
-                    );
-                }
-                catch (IOException | RuntimeException ex) {
-                    System.err.println("Could not load rama.json. Using default RAMA configuration.");
+                if (content.isBlank()) {
                     return useDefaultConfiguration(
-                            "`rama.json` is invalid or unreadable. RAMA is using the packaged default configuration."
+                            "`rama.json` is empty. RAMA is using the packaged default configuration."
                     );
                 }
+
+                System.out.println("Using RAMA config from target repository.");
+                return new RamaConfigLoadResult(OBJECT_MAPPER.readValue(content, RamaConfig.class),
+                        null);
+            }
+            catch (IOException | RuntimeException ex) {
+                System.err.println("Could not load rama.json. Using default RAMA configuration.");
+                return useDefaultConfiguration(
+                        "`rama.json` is invalid or unreadable. RAMA is using the packaged default configuration.");
             }
         }
 
@@ -92,24 +87,21 @@ public class RamaConfigLoader {
      *
      * @return the configured workspace path, or the current working directory when no workspace was configured
      */
-    public Path workspacePath() {
+    public Path getWorkspacePath() {
         if (configuredWorkspace != null) {
             return configuredWorkspace;
         }
 
-        Path workspace = workspacePathFromEnvironment();
-        return workspace == null ? Path.of("") : workspace;
-    }
+        Path workspace = getWorkspacePathFromEnvironment();
 
-    private Path configurationWorkspacePath() {
-        if (configuredWorkspace != null) {
-            return configuredWorkspace;
+        if (workspace == null) {
+            workspace = Path.of("");
         }
 
-        return workspacePathFromEnvironment();
+        return workspace;
     }
 
-    private Path workspacePathFromEnvironment() {
+    private Path getWorkspacePathFromEnvironment() {
         String workspace = System.getenv(GITHUB_WORKSPACE_ENV);
 
         if (workspace == null || workspace.isBlank()) {

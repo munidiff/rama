@@ -13,7 +13,8 @@ import java.util.*;
 
 public class GitHubService implements GitService {
 
-    // Target repository to analyze, selected by GITHUB_REPOSITORY
+    // Target repository to analyze (because source can be a fork), selected by
+    // GITHUB_REPOSITORY
     private final GHRepository repository;
 
     // RAMA configuration used to select model and metamodel files from pull requests.

@@ -21,7 +21,7 @@ public class EmfModelComparator implements ComparisonService {
 
     public EmfModelComparator(RamaConfig config, Path workspacePath) {
         this.config = config;
-        this.workspacePath = workspacePath == null ? Path.of("") : workspacePath;
+        this.workspacePath = workspacePath;
     }
 
     /**

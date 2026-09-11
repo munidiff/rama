@@ -18,7 +18,7 @@ public class Main {
         RamaConfig config = configuration.config();
 
         GitService gitService = GitHubService.fromEnvironment(config);
-        ComparisonService modelComparator = new EmfModelComparator(config, configService.workspacePath());
+        ComparisonService modelComparator = new EmfModelComparator(config, configService.getWorkspacePath());
 
         RamaApplication application = new RamaApplication(
                 config,
