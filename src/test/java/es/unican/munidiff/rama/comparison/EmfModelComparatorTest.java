@@ -1,16 +1,17 @@
 package es.unican.munidiff.rama.comparison;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.eclipse.emf.compare.Comparison;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import es.unican.munidiff.rama.comparison.EmfModelComparator;
-import es.unican.munidiff.rama.comparison.ModelComparisonInput;
 import es.unican.munidiff.rama.config.RamaConfig;
 
 class EmfModelComparatorTest {
@@ -101,7 +102,6 @@ class EmfModelComparatorTest {
 
         RamaConfig config = new RamaConfig(
                 List.of(".model"),
-                List.of(".ecore"),
                 List.of("metamodels/library.ecore")
         );
         EmfModelComparator comparator = new EmfModelComparator(config, tempDir);
@@ -117,6 +117,6 @@ class EmfModelComparatorTest {
     }
 
     private RamaConfig configWithNoMetamodels() {
-        return new RamaConfig(List.of(".model"), List.of(".ecore"), List.of());
+        return new RamaConfig(List.of(".model"), List.of());
     }
 }

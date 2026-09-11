@@ -13,8 +13,8 @@ public class Main {
         // RAMA uses that PR number to fetch changed files and publish the final report.
         int prNumber = Integer.parseInt(args[0]);
 
-        ConfigService configService = new ConfigService();
-        ConfigurationLoadResult configuration = configService.loadConfig();
+        RamaConfigLoader configService = new RamaConfigLoader();
+        RamaConfigLoadResult configuration = configService.loadConfig();
         RamaConfig config = configuration.config();
 
         GitService gitService = GitHubService.fromEnvironment(config);

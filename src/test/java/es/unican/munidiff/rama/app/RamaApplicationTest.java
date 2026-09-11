@@ -1,18 +1,26 @@
 package es.unican.munidiff.rama.app;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.emf.compare.*;
+import org.eclipse.emf.compare.CompareFactory;
+import org.eclipse.emf.compare.Comparison;
+import org.eclipse.emf.compare.Diff;
+import org.eclipse.emf.compare.Match;
 import org.junit.jupiter.api.Test;
 
-import es.unican.munidiff.rama.app.RamaApplication;
-import es.unican.munidiff.rama.comparison.*;
+import es.unican.munidiff.rama.comparison.ComparisonService;
+import es.unican.munidiff.rama.comparison.ModelComparisonInput;
 import es.unican.munidiff.rama.config.RamaConfig;
 import es.unican.munidiff.rama.git.GitService;
-import es.unican.munidiff.rama.render.*;
+import es.unican.munidiff.rama.render.MunidiffRenderer;
+import es.unican.munidiff.rama.render.RenderedMunidiff;
+import es.unican.munidiff.rama.render.ReportComment;
+import es.unican.munidiff.rama.render.ReportCommentRenderer;
 
 class RamaApplicationTest {
 
@@ -24,7 +32,7 @@ class RamaApplicationTest {
         TrackingMunidiffRenderer renderer = new TrackingMunidiffRenderer();
 
         RamaApplication app = new RamaApplication(
-                new RamaConfig(List.of(".model"), List.of(".ecore"), List.of()),
+                new RamaConfig(List.of(".model"), List.of()),
                 gitService,
                 comparator,
                 renderer,
@@ -47,7 +55,7 @@ class RamaApplicationTest {
         TrackingMunidiffRenderer renderer = new TrackingMunidiffRenderer();
 
         RamaApplication app = new RamaApplication(
-                new RamaConfig(List.of(".model"), List.of(".ecore"), List.of()),
+                new RamaConfig(List.of(".model"), List.of()),
                 gitService,
                 comparator,
                 renderer,
@@ -76,7 +84,7 @@ class RamaApplicationTest {
         TrackingMunidiffRenderer renderer = new TrackingMunidiffRenderer();
 
         RamaApplication app = new RamaApplication(
-                new RamaConfig(List.of(".model"), List.of(".ecore"), List.of()),
+                new RamaConfig(List.of(".model"), List.of()),
                 gitService,
                 comparator,
                 renderer,
@@ -96,7 +104,7 @@ class RamaApplicationTest {
         FakeGitService gitService = new FakeGitService(List.of());
 
         RamaApplication app = new RamaApplication(
-                new RamaConfig(List.of(".model"), List.of(".ecore"), List.of()),
+                new RamaConfig(List.of(".model"), List.of()),
                 gitService,
                 new StubComparisonService(comparisonWithoutDifferences()),
                 new TrackingMunidiffRenderer(),

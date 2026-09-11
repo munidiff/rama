@@ -7,15 +7,22 @@ import java.util.*;
 // JSON shape of rama.json.
 public record RamaConfig(
         @JsonProperty("model_extensions") List<String> modelExtensions,
-        @JsonProperty("metamodel_extensions") List<String> metamodelExtensions,
         @JsonProperty("metamodels") List<String> metamodels
 ) {
+    public static final List<String> METAMODEL_EXTENSIONS = List.of(".ecore");
+
+    public RamaConfig(List<String> modelExtensions, List<String> metamodels) {
+        this.modelExtensions = modelExtensions == null ? List.of() : modelExtensions;
+        this.metamodels = metamodels == null ? List.of() : metamodels;
+    }
+
     public boolean isRelevantFile(String filename) {
         if (filename == null) {
             return false;
         }
 
-        return relevantFileExtensions().stream().anyMatch(filename::endsWith);
+        return modelExtensions().stream().anyMatch(filename::endsWith)
+                || METAMODEL_EXTENSIONS.stream().anyMatch(filename::endsWith);
     }
 
     public boolean isMetamodelFile(String filename) {
@@ -23,21 +30,6 @@ public record RamaConfig(
             return false;
         }
 
-        return metamodelFileExtensions().stream().anyMatch(filename::endsWith);
-    }
-
-    public List<String> metamodelPaths() {
-        return metamodels == null ? List.of() : metamodels;
-    }
-
-    private List<String> relevantFileExtensions() {
-        List<String> extensions = new ArrayList<>();
-        extensions.addAll(modelExtensions == null ? List.of() : modelExtensions);
-        extensions.addAll(metamodelFileExtensions());
-        return extensions;
-    }
-
-    private List<String> metamodelFileExtensions() {
-        return metamodelExtensions == null ? List.of() : metamodelExtensions;
+        return METAMODEL_EXTENSIONS.stream().anyMatch(filename::endsWith);
     }
 }

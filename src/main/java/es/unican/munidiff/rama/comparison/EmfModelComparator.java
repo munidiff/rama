@@ -64,7 +64,7 @@ public class EmfModelComparator implements ComparisonService {
      * @param resourceSet the ResourceSet with which to register the metamodels
      */
     private void registerMetamodels(ResourceSet resourceSet) {
-        for (String metamodel : config.metamodelPaths()) {
+        for (String metamodel : config.metamodels()) {
             Resource metamodelResource = resourceSet.getResource(
                     URI.createFileURI(resolveMetamodelPath(metamodel).toString()),
                     true

@@ -6,7 +6,7 @@ package es.unican.munidiff.rama.config;
  * @param config the configuration selected for the current execution
  * @param warning a user-facing warning, or {@code null} when repository configuration was loaded successfully
  */
-public record ConfigurationLoadResult(
+public record RamaConfigLoadResult(
         RamaConfig config,
         String warning
 ) {

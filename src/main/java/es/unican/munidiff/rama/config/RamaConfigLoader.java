@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.nio.file.*;
 
-public class ConfigService {
+public class RamaConfigLoader {
 
     // Environment variable pointing to the GitHub Actions workspace, where the target repository is checked out.
     private static final String GITHUB_WORKSPACE_ENV = "GITHUB_WORKSPACE";
@@ -18,11 +18,11 @@ public class ConfigService {
 
     private final Path configuredWorkspace;
 
-    public ConfigService() {
+    public RamaConfigLoader() {
         this(null);
     }
 
-    ConfigService(Path configuredWorkspace) {
+    RamaConfigLoader(Path configuredWorkspace) {
         this.configuredWorkspace = configuredWorkspace;
     }
 
@@ -34,7 +34,7 @@ public class ConfigService {
      * @return the selected configuration and an optional warning for the report
      * @throws IOException if the packaged default configuration cannot be read
      */
-    public ConfigurationLoadResult loadConfig() throws IOException {
+    public RamaConfigLoadResult loadConfig() throws IOException {
         Path workspace = configurationWorkspacePath();
 
         if (workspace != null) {
@@ -52,7 +52,7 @@ public class ConfigService {
                     }
 
                     System.out.println("Using RAMA config from target repository.");
-                    return new ConfigurationLoadResult(
+                    return new RamaConfigLoadResult(
                             OBJECT_MAPPER.readValue(content, RamaConfig.class),
                             null
                     );
@@ -71,16 +71,16 @@ public class ConfigService {
         );
     }
 
-    private ConfigurationLoadResult useDefaultConfiguration(String warning) throws IOException {
+    private RamaConfigLoadResult useDefaultConfiguration(String warning) throws IOException {
         System.out.println("Using default RAMA config.");
 
-        try (InputStream defaultConfig = ConfigService.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME)) {
+        try (InputStream defaultConfig = RamaConfigLoader.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME)) {
             if (defaultConfig == null) {
                 throw new IllegalStateException(
                         "Default RAMA config not found in application resources: " + CONFIG_FILENAME
                 );
             }
-            return new ConfigurationLoadResult(
+            return new RamaConfigLoadResult(
                     OBJECT_MAPPER.readValue(defaultConfig, RamaConfig.class),
                     warning
             );
