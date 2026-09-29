@@ -87,15 +87,6 @@
 	<build>
 		<finalName>RAMA</finalName>
 
-		<resources>
-			<resource>
-				<directory>${project.basedir}</directory>
-				<includes>
-					<include>rama.json</include>
-				</includes>
-			</resource>
-		</resources>
-
 		<plugins>
 			<!-- Unit tests -->
 			<plugin>
