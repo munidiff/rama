@@ -1,11 +1,13 @@
 package es.unican.munidiff.rama.render;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import es.unican.munidiff.rama.render.PlantUMLEncoderService;
-import net.sourceforge.plantuml.code.*;
+import net.sourceforge.plantuml.code.NoPlantumlCompressionException;
+import net.sourceforge.plantuml.code.TranscoderUtil;
 
 class PlantUMLEncoderServiceTest {
 

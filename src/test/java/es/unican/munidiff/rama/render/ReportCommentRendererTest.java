@@ -1,15 +1,12 @@
 package es.unican.munidiff.rama.render;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
-import es.unican.munidiff.rama.render.FileReport;
-import es.unican.munidiff.rama.render.PlantUMLEncoderService;
-import es.unican.munidiff.rama.render.ReportComment;
-import es.unican.munidiff.rama.render.ReportCommentRenderer;
 
 class ReportCommentRendererTest {
 

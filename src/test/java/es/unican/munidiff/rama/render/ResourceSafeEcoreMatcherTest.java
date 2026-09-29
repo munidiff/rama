@@ -1,12 +1,15 @@
 package es.unican.munidiff.rama.render;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
 import org.junit.jupiter.api.Test;
-
-import es.unican.munidiff.rama.render.ResourceSafeEcoreMatcher;
 
 class ResourceSafeEcoreMatcherTest {
 
