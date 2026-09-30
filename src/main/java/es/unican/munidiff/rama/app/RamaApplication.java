@@ -94,6 +94,10 @@ public class RamaApplication {
                     ));
                     continue;
                 }
+                
+                if (file.hasLineConflicts()) {
+                    System.out.println("Git has detected line conflicts");
+                }
 
                 Comparison comparison = modelComparator.compare(file);
 
@@ -184,7 +188,8 @@ public class RamaApplication {
                 original.previousFilename(),
                 branchContent,
                 original.baseContent(),
-                null
+                null,
+                false
         );
 
         return render(modelComparator.compare(branchAgainstBase), original);

@@ -1,15 +1,31 @@
 package es.unican.munidiff.rama.git.github;
 
-import org.kohsuke.github.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jgit.diff.DiffAlgorithm;
+import org.eclipse.jgit.diff.RawText;
+import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.merge.MergeAlgorithm;
+import org.eclipse.jgit.merge.MergeResult;
+import org.kohsuke.github.GHCommit;
+import org.kohsuke.github.GHCommitPointer;
+import org.kohsuke.github.GHContent;
+import org.kohsuke.github.GHFileNotFoundException;
+import org.kohsuke.github.GHIssue;
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHPullRequestFileDetail;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 
 import es.unican.munidiff.rama.comparison.ModelComparisonInput;
 import es.unican.munidiff.rama.config.RamaConfig;
 import es.unican.munidiff.rama.git.GitService;
 import es.unican.munidiff.rama.render.ReportComment;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 public class GitHubService implements GitService {
 
@@ -54,8 +70,29 @@ public class GitHubService implements GitService {
 
     @Override
     public List<ModelComparisonInput> getModelFiles(int pullRequestNumber) throws IOException {
-        // Fetch the pull request and its source and target branches.
+
         GHPullRequest pullRequest = repository.getPullRequest(pullRequestNumber);
+
+        boolean prHasLineConflicts = false;
+        try {
+            Boolean mergeable = pullRequest.getMergeable(); // null = GitHub is still computing it
+            for (int i = 0; mergeable == null && i < 15; i++) {
+                Thread.sleep(1000);
+                pullRequest = repository.getPullRequest(pullRequestNumber);
+                mergeable = pullRequest.getMergeable();
+            }
+
+            String state = pullRequest.getMergeableState(); // "dirty" = merge conflicts
+            prHasLineConflicts = Boolean.FALSE.equals(mergeable) || "dirty".equals(state);
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException("Unable to get mergeable state");
+        }
+
+        if (prHasLineConflicts) {
+            System.out.println("GitHub detected conflicts in some files of the pull request");
+        }
+
         GHCommitPointer sourceBranch = pullRequest.getHead();
         GHCommitPointer targetBranch = pullRequest.getBase();
         String baseCommitSha = findMergeBaseCommitSha(sourceBranch, targetBranch);
@@ -64,7 +101,9 @@ public class GitHubService implements GitService {
 
         for (GHPullRequestFileDetail file : pullRequest.listFiles()) {
             if (isRelevantFile(file, config)) {
-                modelFiles.add(toModelComparisonInput(file, sourceBranch, targetBranch, baseCommitSha));
+                modelFiles.add(toModelComparisonInput(file, 
+                        sourceBranch, targetBranch, baseCommitSha,
+                        prHasLineConflicts));
             }
         }
 
@@ -126,8 +165,10 @@ public class GitHubService implements GitService {
             GHPullRequestFileDetail file,
             GHCommitPointer sourceBranch,
             GHCommitPointer targetBranch,
-            String baseCommitSha
+            String baseCommitSha,
+            boolean prHasLineConflicts
     ) throws IOException {
+
         String sourcePath = file.getFilename();
         String targetPath = file.getPreviousFilename() == null ? file.getFilename() : file.getPreviousFilename();
 
@@ -135,12 +176,29 @@ public class GitHubService implements GitService {
         String targetContent = fetchFileContent(targetBranch.getRepository(), targetPath, targetBranch.getSha());
         String baseContent = fetchFileContent(targetBranch.getRepository(), targetPath, baseCommitSha);
 
+        boolean fileHasLineConflicts = false;
+
+        if (prHasLineConflicts) {
+            // check whether there are line conflicts in this particular file
+            MergeAlgorithm algo = new MergeAlgorithm(
+                    DiffAlgorithm.getAlgorithm(DiffAlgorithm.SupportedAlgorithm.HISTOGRAM));
+
+            // "ours" -> "target" (taking the point of view of the repository maintainers)
+            MergeResult<RawText> result = algo.merge(RawTextComparator.DEFAULT,
+                    new RawText(baseContent.getBytes(StandardCharsets.UTF_8)),
+                    new RawText(targetContent.getBytes(StandardCharsets.UTF_8)),
+                    new RawText(sourceContent.getBytes(StandardCharsets.UTF_8)));
+
+            fileHasLineConflicts = result.containsConflicts();
+        }
+
         return new ModelComparisonInput(
                 file.getFilename(),
                 file.getPreviousFilename(),
                 sourceContent,
                 targetContent,
-                baseContent
+                baseContent,
+                fileHasLineConflicts
         );
     }
 

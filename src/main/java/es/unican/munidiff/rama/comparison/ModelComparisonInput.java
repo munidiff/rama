@@ -5,7 +5,8 @@ public record ModelComparisonInput(
         String previousFilename,
         String sourceContent,
         String targetContent,
-        String baseContent
+        String baseContent,
+        boolean hasLineConflicts
 ) {
     public ModelComparisonInput(
             String filename,
@@ -13,7 +14,7 @@ public record ModelComparisonInput(
             String targetContent,
             String baseContent
     ) {
-        this(filename, null, sourceContent, targetContent, baseContent);
+        this(filename, null, sourceContent, targetContent, baseContent, false);
     }
 
     public boolean isRename() {
