@@ -86,6 +86,7 @@ public class RamaApplication {
             System.out.println("Target content length: " + contentLength(file.targetContent()));
             System.out.println("Base content length: " + contentLength(file.baseContent()));
 
+            StringBuilder message = new StringBuilder();
             try {
                 if (isDeletedWithoutRename(file)) {
                     fileReports.add(FileReport.message(
@@ -94,9 +95,12 @@ public class RamaApplication {
                     ));
                     continue;
                 }
-                
+
                 if (file.hasLineConflicts()) {
-                    System.out.println("Git has detected line conflicts");
+                    String conflictsInfo = "Git has detected line conflicts";
+                    message.append(conflictsInfo).append("\n\n");
+
+                    System.out.println(conflictsInfo);
                 }
 
                 Comparison comparison = modelComparator.compare(file);
@@ -106,23 +110,38 @@ public class RamaApplication {
 
                 if (comparison.getConflicts().isEmpty()) {
                     if (comparison.getDifferences().isEmpty()) {
+                        message.append("No model-level changes were detected in this file.");
                         fileReports.add(FileReport.message(
                                 file.filename(),
-                                "No model-level changes were detected in this file."
+                                message.toString()
                         ));
                     }
                     else {
+                        // add remark about model-level conflicts if there are line-based ones
+                        if (file.hasLineConflicts()) {
+                            message.append("No model-level conflicts detected").append("\n\n");
+                        }
                         RenderedMunidiff rendered = render(comparison, file);
                         fileReports.add(new FileReport(
                                 file.filename(),
                                 rendered.plantuml(),
                                 rendered.unifiedDiff(),
-                                config.isMetamodelFile(file.filename())
+                                config.isMetamodelFile(file.filename()),
+                                message.toString()
                         ));
                     }
                 }
                 else {
-                    fileReports.add(FileReport.conflict(file.filename(), renderConflictReport(comparison, file)));
+                    if (file.hasLineConflicts()) {
+                        message.append("Conflicts also found at model level").append("\n\n");
+                    }
+                    else {
+                        message.append(
+                                "Model conflicts found (but no conflicts present at file level")
+                                .append("\n\n");
+                    }
+                    fileReports.add(FileReport.conflict(file.filename(), message.toString(),
+                            renderConflictReport(comparison, file)));
                 }
             }
             catch (Exception ex) {
@@ -131,6 +150,7 @@ public class RamaApplication {
 
                 fileReports.add(FileReport.failure(
                         file.filename(),
+                        message.toString(),
                         diagnostic("Could not analyze this file.", ex)
                 ));
             }

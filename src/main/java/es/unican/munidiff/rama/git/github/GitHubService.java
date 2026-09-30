@@ -73,10 +73,11 @@ public class GitHubService implements GitService {
 
         GHPullRequest pullRequest = repository.getPullRequest(pullRequestNumber);
 
+        int i;
         boolean prHasLineConflicts = false;
         try {
             Boolean mergeable = pullRequest.getMergeable(); // null = GitHub is still computing it
-            for (int i = 0; mergeable == null && i < 15; i++) {
+            for (i = 1; mergeable == null && i <= 15; i++) {
                 Thread.sleep(1000);
                 pullRequest = repository.getPullRequest(pullRequestNumber);
                 mergeable = pullRequest.getMergeable();
@@ -91,6 +92,7 @@ public class GitHubService implements GitService {
 
         if (prHasLineConflicts) {
             System.out.println("GitHub detected conflicts in some files of the pull request");
+            System.out.println("Mergeable iterations required: " + i);
         }
 
         GHCommitPointer sourceBranch = pullRequest.getHead();

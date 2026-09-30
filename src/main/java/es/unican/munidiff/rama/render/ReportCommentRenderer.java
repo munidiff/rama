@@ -43,6 +43,10 @@ public class ReportCommentRenderer {
         for (FileReport report : reports) {
             body.append("### <code>").append(escapeHtml(report.filename())).append("</code>\n\n");
 
+            if (report.hasMessage()) {
+                body.append(escapeHtml(report.message())).append("\n\n");
+            }
+
             if (report.hasConflictReport()) {
                 appendConflictReport(body, report);
             }
@@ -50,14 +54,9 @@ public class ReportCommentRenderer {
                 appendGraphicalReport(body, report);
                 appendTextualReport(body, report);
             }
-            else if (report.hasMessage()) {
-                body.append(escapeHtml(report.message())).append("\n\n");
+            else if (report.hasFailure()) {
+                appendDiagnostic(body, report.diagnostic());
             }
-            else {
-                body.append("RAMA could not analyze this file.\n\n");
-            }
-
-            appendDiagnostic(body, report.diagnostic());
         }
 
         return new ReportComment(COMMENT_MARKER, body.toString());
@@ -186,10 +185,6 @@ public class ReportCommentRenderer {
     }
 
     private void appendDiagnostic(StringBuilder body, String diagnostic) {
-        if (diagnostic == null || diagnostic.isBlank()) {
-            return;
-        }
-
         body.append("<details>\n");
         body.append("<summary>Diagnostic</summary>\n\n");
         body.append("<pre><code>").append(escapeHtml(diagnostic)).append("</code></pre>\n\n");

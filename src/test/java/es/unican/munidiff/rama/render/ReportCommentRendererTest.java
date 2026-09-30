@@ -54,7 +54,8 @@ class ReportCommentRendererTest {
                 "metamodels/example.ecore",
                 "plantuml-source",
                 "diff --metamodel",
-                true
+                true,
+                null
         )));
 
         assertTrue(comment.body().contains("<summary>Graphical Report</summary>"));
@@ -83,12 +84,15 @@ class ReportCommentRendererTest {
 
     @Test
     void failureReportIncludesEscapedDiagnostic() {
+        String message = "RAMA could not analyze this file.";
+
         ReportComment comment = renderer.render(List.of(FileReport.failure(
                 "models/broken.model",
+                message,
                 "Could not load <bad>&\"model\""
         )));
 
-        assertTrue(comment.body().contains("RAMA could not analyze this file."));
+        assertTrue(comment.body().contains(message));
         assertTrue(comment.body().contains("Could not load &lt;bad&gt;&amp;&quot;model&quot;"));
     }
 

@@ -29,20 +29,23 @@ public record FileReport(
         this(filename, plantuml, textualReport, false, null, null, null);
     }
 
-    public FileReport(String filename, String plantuml, String textualReport, boolean metamodel) {
-        this(filename, plantuml, textualReport, metamodel, null, null, null);
+    public FileReport(String filename, 
+            String plantuml, String textualReport,
+            boolean metamodel,
+            String message) {
+        this(filename, plantuml, textualReport, metamodel, message, null, null);
     }
 
     public static FileReport message(String filename, String message) {
         return new FileReport(filename, null, null, false, message, null, null);
     }
 
-    public static FileReport failure(String filename, String diagnostic) {
-        return new FileReport(filename, null, null, false, null, diagnostic, null);
+    public static FileReport failure(String filename, String message, String diagnostic) {
+        return new FileReport(filename, null, null, false, message, diagnostic, null);
     }
 
-    public static FileReport conflict(String filename, ConflictReport conflictReport) {
-        return new FileReport(filename, null, null, false, null, null, conflictReport);
+    public static FileReport conflict(String filename, String message, ConflictReport conflictReport) {
+        return new FileReport(filename, null, null, false, message, null, conflictReport);
     }
 
     public boolean hasPlantuml() {
@@ -57,11 +60,12 @@ public record FileReport(
         return message != null && !message.isBlank();
     }
 
-    public boolean hasDiagnostic() {
+    public boolean hasFailure() {
         return diagnostic != null && !diagnostic.isBlank();
     }
 
     public boolean hasConflictReport() {
         return conflictReport != null;
     }
+
 }
