@@ -53,22 +53,21 @@ RAMA uses [`reprogit`](https://github.com/alfonsodelavega/reprogit) to generate 
 
 ## Acknowledgements
 
-RAMA's development was started as the undergraduate project of [Samuel Díaz-Aja]() at the University of Cantabria. You can access the original project [here]().
+RAMA's development was started as the undergraduate project of [Samuel Díaz-Aja](https://www.linkedin.com/in/samuel-d%C3%ADaz-592a7a2b5/) at the University of Cantabria. You can access the original project [here](https://github.com/sdiaz1208/rama).
 
 RAMA has been demonstrated at the MODELS'26 tools and demonstrations track. The associated paper and citation details are as follows:
 
 ```
-@inproceedings{10.1145/3837062.3838869,
-author = {D{\'i}az-Aja, Samuel and S{\'a}nchez, Pablo and de la Vega, Alfonso},
-title = {Facilitating model reviews in pull/change request processes with RAMA},
-year = {2026},
-isbn = {9798400729034},
-url = {https://doi.org/10.1145/3837062.3838869},
-doi = {10.1145/3837062.3838869},
-booktitle = {Proceedings of the ACM/IEEE 29th International Conference on Model Driven Engineering Languages and Systems},
-pages = {204–208},
-numpages = {5},
-keywords = {Model evolution, Model comparison, Code review, Pull request, Continuous integration.},
-series = {MODELS Companion '26}
+@inproceedings{rama,
+    author = {D{\'i}az-Aja, Samuel and S{\'a}nchez, Pablo and de la Vega, Alfonso},
+    title = {Facilitating model reviews in pull/change request processes with RAMA},
+    year = {2026},
+    isbn = {9798400729034},
+    url = {https://doi.org/10.1145/3837062.3838869},
+    doi = {10.1145/3837062.3838869},
+    booktitle = {Proceedings of the ACM/IEEE 29th International Conference on Model Driven Engineering Languages and Systems},
+    pages = {204–208},
+    numpages = {5},
+    series = {MODELS Companion '26}
 }
 ```
