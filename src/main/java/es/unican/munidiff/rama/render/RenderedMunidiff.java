@@ -1,6 +1,6 @@
 package es.unican.munidiff.rama.render;
 
-import org.eclipse.epsilon.modiff.munidiff.Munidiff;
+import es.unican.munidiff.Munidiff;
 
 public record RenderedMunidiff(
         Munidiff munidiff,

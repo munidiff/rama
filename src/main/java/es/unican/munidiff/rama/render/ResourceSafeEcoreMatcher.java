@@ -2,12 +2,18 @@ package es.unican.munidiff.rama.render;
 
 import java.util.Objects;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.epsilon.modiff.matcher.Matcher;
+
+import es.unican.munidiff.matcher.Matcher;
 
 /**
  * Ecore matcher that avoids MoDiff's IdMatcher null-resource assumption.
